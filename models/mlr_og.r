@@ -72,3 +72,13 @@ png("diagnostic_plots_random.png")
 par(mfrow = c(2,2))
 plot(lin_ord1)
 dev.off()
+
+# Save linear model MSE
+linear_results <- data.frame(
+  model = "linear",
+  train_mse = mean((train_df$`% Chronically Absent` - predict(lin_ord1, train_df))^2, na.rm=TRUE),
+  test_mse = mse_test,
+  r_squared = summary(lin_ord1)$r.squared,
+  adj_r_squared = summary(lin_ord1)$adj.r.squared
+)
+write_csv(linear_results, "data/mlr_random_split/linear_results_random.csv")
