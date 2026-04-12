@@ -1,4 +1,3 @@
-install.packages("readr")
 library(readr)
 
 merged_data <- read_csv("data/processed/merged.csv")

@@ -1,5 +1,3 @@
-install.packages("readr")
-install.packages("dplyr")
 library(dplyr)
 library(readr)
 
