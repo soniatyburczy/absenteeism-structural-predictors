@@ -27,7 +27,7 @@ merged_df <- attendance_df %>%
   )
 
 merged_df <- na.omit(merged_df)
-write_csv(merged_df, "merged.csv")
+write_csv(merged_df, "merged_csv")
 
 # Step 2: Random Split (Khushi's approach)
 set.seed(123)

@@ -1,16 +1,19 @@
 # Temporal split approach (train: 2013-2016, test: 2017-2018)
 # Based on Khushi's structure with split method changed
 # See mlr_og.r for random split version for comparison
+
 library(tidyverse)
 test_df <- read_csv("data/processed/test.csv")
 train_df <- read_csv("data/processed/train.csv")
 lin_ord1 <- lm(`% Chronically Absent` ~ `Economic Need Index` + `% Poverty` + 
 `% English Language Learners` + `% Students with Disabilities`, data = train_df)
 summary(lin_ord1)
+
 # Calculate MSE
 pre_test <- predict(lin_ord1, test_df)
 mse_test <- mean((test_df$`% Chronically Absent` - pre_test)^2, na.rm=TRUE)
 mse_test
+
 # Find Best Model Order
 train_mse <- rep(0, 10)
 test_mse <- rep(0, 10)
