@@ -102,15 +102,29 @@ plot(lin_ord1)
 dev.off()
 
 # Save linear model results
+pre_train_lin <- predict(lin_ord1, train_df)
+train_mse_lin <- mean((train_df$`% Chronically Absent` - pre_train_lin)^2, na.rm=TRUE)
+
+# Test R²
+ss_res_test_lin <- sum((test_df$`% Chronically Absent` - pre_test)^2, na.rm=TRUE)
+ss_tot_test_lin <- sum((test_df$`% Chronically Absent` - mean(test_df$`% Chronically Absent`, na.rm=TRUE))^2, na.rm=TRUE)
+test_r2_lin <- 1 - ss_res_test_lin / ss_tot_test_lin
+
+n_test_lin <- sum(!is.na(test_df$`% Chronically Absent`))
+p_lin <- 4
+test_adj_r2_lin <- 1 - (1 - test_r2_lin) * (n_test_lin - 1) / (n_test_lin - p_lin - 1)
+
 linear_results <- data.frame(
   model = "linear",
-  train_mse = mean((train_df$`% Chronically Absent` - predict(lin_ord1, train_df))^2, na.rm=TRUE),
+  train_mse = train_mse_lin,
   test_mse = mse_test,
-  r_squared = summary(lin_ord1)$r.squared,
-  adj_r_squared = summary(lin_ord1)$adj.r.squared
+  train_r2 = summary(lin_ord1)$r.squared,
+  train_adj_r2 = summary(lin_ord1)$adj.r.squared,
+  test_r2 = test_r2_lin,
+  test_adj_r2 = test_adj_r2_lin
 )
-
 write_csv(linear_results, "data/mlr_random_split/linear_results_random.csv")
+
 poly_results <- data.frame(
   degree = 1:10,
   train_mse = train_mse,
