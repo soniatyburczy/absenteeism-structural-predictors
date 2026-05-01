@@ -2,8 +2,8 @@
 # 1. Fixed poly() call - poly(ENI, j) instead of poly(x + y + z, j)
 # 2. Added na.rm=TRUE to mean() calls
 # 3. Switched to png() saving for plot stability
-# 4. Changed to grouped split by DBN to address school-level leakage
-# Grouped split approach (set.seed(123), 80/20, grouped by DBN)
+
+# Random split approach (set.seed(123), 80/20)
 
 library(tidyverse)
 library(janitor)
@@ -27,17 +27,13 @@ merged_df <- attendance_df %>%
   )
 
 merged_df <- na.omit(merged_df)
-write_csv(merged_df, "merged.csv")
+write_csv(merged_df, "merged_csv")
 
-# Step 2: Grouped Split
+# Step 2: Random Split (Khushi's approach)
 set.seed(123)
-split_df <- group_initial_split(merged_df, group = DBN, prop = .8)
+split_df <- initial_split(merged_df, prop = .8)
 train_df <- training(split_df)
 test_df <- testing(split_df)
-
-# Check distributions
-summary(train_df$`% Chronically Absent`)
-summary(test_df$`% Chronically Absent`)
 
 # Linear Regression
 lin_ord1 <- lm(`% Chronically Absent` ~ `Economic Need Index` + `% Poverty` + 
@@ -49,10 +45,9 @@ pre_test <- predict(lin_ord1, test_df)
 mse_test <- mean((test_df$`% Chronically Absent` - pre_test)^2, na.rm=TRUE)
 mse_test
 
+# Find Best Polynomial Order (fixed poly call)
 train_mse <- rep(0, 10)
 test_mse <- rep(0, 10)
-test_r2 <- rep(0, 10)
-test_adj_r2 <- rep(0, 10)
 
 for (j in 1:10){
   mod <- lm(`% Chronically Absent` ~ poly(`Economic Need Index`, j, raw=TRUE) + 
@@ -82,26 +77,27 @@ for (j in 1:10){
 }
 
 # MSE plot
-png("plots/mlr_grouped_split/mse_plot_grouped.png")
+png("plots/mlr_random_split/mse_plot_random.png")
 matplot(1:10, cbind(train_mse, test_mse), type="b", 
-col=c("red","blue"), pch=1,
-ylab="Training vs. Test MSE", xlab="Degree of the Polynomials")
+        col=c("red","blue"), pch=1,
+        ylab="Training vs. Test MSE", 
+        xlab="Degree of the Polynomials")
 legend("topright", legend=c("Train","Test"), col=c("red","blue"), pch=1)
 dev.off()
 
 # R² plot (train and test, R² and Adj R²)
-png("plots/mlr_grouped_split/r2_plot_grouped.png")
+png("plots/mlr_random_split/r2_plot_random.png")
 matplot(1:10, cbind(train_r2, train_adj_r2, test_r2, test_adj_r2), type="b",
-col=c("red","salmon","darkgreen","purple"), pch=1, lty=1:4,
-ylab="R²", xlab="Degree of the Polynomials",
-main="Train vs. Test R² and Adjusted R²")
+        col=c("red","salmon","darkgreen","purple"), pch=1, lty=1:4,
+        ylab="R²", xlab="Degree of the Polynomials",
+        main="Train vs. Test R² and Adjusted R²", ylim=c(0,1))
 legend("bottomright", 
 legend=c("Train R²","Train Adj R²","Test R²","Test Adj R²"), 
 col=c("red","salmon","darkgreen","purple"), pch=1, lty=1:4)
 dev.off()
 
 # Diagnostic plots
-png("plots/mlr_grouped_split/diagnostic_plots_grouped.png")
+png("plots/mlr_random_split/diagnostic_plots_random.png")
 par(mfrow = c(2,2))
 plot(lin_ord1)
 dev.off()
@@ -128,7 +124,8 @@ linear_results <- data.frame(
   test_r2 = test_r2_lin,
   test_adj_r2 = test_adj_r2_lin
 )
-write_csv(linear_results, "data/mlr_grouped_split/linear_results_grouped.csv")
+write_csv(linear_results, "data/mlr_random_split/linear_results_random.csv")
+
 poly_results <- data.frame(
   degree = 1:10,
   train_mse = train_mse,
@@ -138,4 +135,4 @@ poly_results <- data.frame(
   test_r2 = test_r2,
   test_adj_r2 = test_adj_r2
 )
-write_csv(poly_results, "data/mlr_grouped_split/poly_results_grouped.csv")
+write_csv(poly_results, "data/mlr_random_split/poly_results_random.csv")

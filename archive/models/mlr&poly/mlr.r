@@ -52,20 +52,20 @@ for (j in 1:10){
 # MSE plot
 png("plots/mlr_temporal_split/mse_plot_temporal.png")
 matplot(1:10, cbind(train_mse, test_mse), type="b", 
-col=c("red","blue"), pch=1,
-ylab="Training vs. Test MSE", xlab="Degree of the Polynomials")
+        col=c("red","blue"), pch=1,
+        ylab="Training vs. Test MSE", xlab="Degree of the Polynomials")
 legend("topright", legend=c("Train","Test"), col=c("red","blue"), pch=1)
 dev.off()
 
 # R² plot (train and test, R² and Adj R²)
 png("plots/mlr_temporal_split/r2_plot_temporal.png")
 matplot(1:10, cbind(train_r2, train_adj_r2, test_r2, test_adj_r2), type="b",
-col=c("red","salmon","darkgreen","purple"), pch=1, lty=1:4,
-ylab="R²", xlab="Degree of the Polynomials",
-main="Train vs. Test R² and Adjusted R²")
-legend("bottomright", 
-legend=c("Train R²","Train Adj R²","Test R²","Test Adj R²"), 
-col=c("red","salmon","darkgreen","purple"), pch=1, lty=1:4)
+        col=c("red","salmon","darkgreen","purple"), pch=1, lty=1:4,
+        ylab="R²", xlab="Degree of the Polynomials",
+        main="Train vs. Test R² and Adjusted R²",
+        ylim=c(0,1))
+legend("bottomright", legend=c("Train R²","Train Adj R²","Test R²","Test Adj R²"), 
+        col=c("red","salmon","darkgreen","purple"), pch=1, lty=1:4)
 dev.off()
 
 # Diagnostic plots

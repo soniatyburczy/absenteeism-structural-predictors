@@ -26,8 +26,8 @@ rf_model <- randomForest(
   chronic_absent ~ econ_need + pct_poverty + pct_ell + pct_swd,
   data      = train_clean,
   ntree     = 500,
-  mtry      = 3,
-  nodesize  = 10,
+  mtry      = 1,
+  nodesize  = 20,
   maxnodes  = 100,
   importance = TRUE,
   na.action = na.omit
@@ -79,24 +79,42 @@ dev.off()
 
 # Train vs Test MSE across ntree values
 ntree_vals <- seq(50, 500, by = 50)
-train_mse_ntree <- rep(0, length(ntree_vals))
-test_mse_ntree  <- rep(0, length(ntree_vals))
+train_mse_ntree    <- rep(0, length(ntree_vals))
+test_mse_ntree     <- rep(0, length(ntree_vals))
+train_r2_ntree     <- rep(0, length(ntree_vals))
+test_r2_ntree      <- rep(0, length(ntree_vals))
+train_adj_r2_ntree <- rep(0, length(ntree_vals))
+test_adj_r2_ntree  <- rep(0, length(ntree_vals))
 
 for (i in seq_along(ntree_vals)) {
   mod_i <- randomForest(
     chronic_absent ~ econ_need + pct_poverty + pct_ell + pct_swd,
     data      = train_clean,
     ntree     = ntree_vals[i],
-    mtry      = 3,
+    mtry      = 2,
     nodesize  = 10,
     maxnodes  = 100,
     na.action = na.omit
   )
+  
   pre_train_i <- predict(mod_i, train_clean)
   pre_test_i  <- predict(mod_i, test_clean)
   
+  # MSE
   train_mse_ntree[i] <- mean((train_clean$chronic_absent - pre_train_i)^2, na.rm = TRUE)
   test_mse_ntree[i]  <- mean((test_clean$chronic_absent  - pre_test_i)^2,  na.rm = TRUE)
+  
+  # Train R²
+  ss_res_train_i <- sum((train_clean$chronic_absent - pre_train_i)^2, na.rm = TRUE)
+  ss_tot_train_i <- sum((train_clean$chronic_absent - mean(train_clean$chronic_absent, na.rm = TRUE))^2, na.rm = TRUE)
+  train_r2_ntree[i]     <- 1 - ss_res_train_i / ss_tot_train_i
+  train_adj_r2_ntree[i] <- 1 - (1 - train_r2_ntree[i]) * (n_train - 1) / (n_train - p_rf - 1)
+  
+  # Test R²
+  ss_res_test_i <- sum((test_clean$chronic_absent - pre_test_i)^2, na.rm = TRUE)
+  ss_tot_test_i <- sum((test_clean$chronic_absent - mean(test_clean$chronic_absent, na.rm = TRUE))^2, na.rm = TRUE)
+  test_r2_ntree[i]     <- 1 - ss_res_test_i / ss_tot_test_i
+  test_adj_r2_ntree[i] <- 1 - (1 - test_r2_ntree[i]) * (n_test - 1) / (n_test - p_rf - 1)
 }
 
 png("plots/rf_temporal_split/mse_plot_temporal.png")
@@ -104,6 +122,17 @@ matplot(ntree_vals, cbind(train_mse_ntree, test_mse_ntree), type = "b",
         col = c("red", "blue"), pch = 1,
         ylab = "MSE", xlab = "Number of Trees",
         main = "Training vs. Test MSE by Number of Trees",
-        ylim = c(0, max(test_mse_ntree) * 1.1))  # start at 0
+        ylim = c(0, max(test_mse_ntree) * 1.1))
 legend("topright", legend = c("Train", "Test"), col = c("red", "blue"), pch = 1)
+dev.off()
+
+png("plots/rf_temporal_split/r2_plot_temporal.png")
+matplot(ntree_vals, cbind(train_r2_ntree, train_adj_r2_ntree, test_r2_ntree, test_adj_r2_ntree),
+        type = "b", col = c("red", "salmon", "darkgreen", "purple"), pch = 1, lty = 1:4,
+        ylab = "R²", xlab = "Number of Trees",
+        main = "Train vs. Test R² and Adjusted R² by Number of Trees",
+        ylim = c(0, 1))
+legend("bottomright",
+       legend = c("Train R²", "Train Adj R²", "Test R²", "Test Adj R²"),
+       col = c("red", "salmon", "darkgreen", "purple"), pch = 1, lty = 1:4)
 dev.off()

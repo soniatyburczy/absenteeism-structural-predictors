@@ -1,8 +1,8 @@
 library(dplyr)
 library(readr)
 
-attendance_df <- read_csv("data/raw/attendance.csv", show_col_types = FALSE, locale = locale(grouping_mark = ","))
-demographics_df <- read_csv("data/raw/demographics.csv", show_col_types = FALSE, locale = locale(grouping_mark = ","))
+attendance_df <- read_csv("attendance.csv", show_col_types = FALSE, locale = locale(grouping_mark = ","))
+demographics_df <- read_csv("demographics.csv", show_col_types = FALSE, locale = locale(grouping_mark = ","))
 
 merged_df <- attendance_df %>%
   filter(Year != "2018-19") %>%
