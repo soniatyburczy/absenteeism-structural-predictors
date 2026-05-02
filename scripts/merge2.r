@@ -34,8 +34,3 @@ merged_df <- attendance_df |>
   drop_na()
 
 write_csv(merged_df, "data/processed/merged2.csv")
-
-print(nrow(attendance_df))
-print(nrow(pr_16))
-print(head(attendance_df$DBN))
-print(head(pr_16$dbn))
