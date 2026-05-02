@@ -1,0 +1,5 @@
+"Stage","Row_Count","Description"
+"Total Rows",7607,"Total Rows after cleaning"
+"Train Set (2013-16)",4540,"Training data"
+"Tune Set (2016-17)",1530,"Development year for tuning"
+"Test Set (2017-18)",1537,"Final evaluation year"
