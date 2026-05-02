@@ -25,19 +25,19 @@ rf_grid <- grid_regular(
   levels = 5
 )
 
+rf_workflow <- workflow() |>
+  add_recipe(rf_recipe) |>
+  add_model(rf_tune)
+
 tune_res <- tune_grid(
-  rf_tune,
-  preprocessor = rf_recipe,
+  rf_workflow,
   resamples = folds,
   grid = rf_grid
 )
 
 best_params <- select_best(tune_res, metric = "rmse")
-rf_final <- finalize_model(rf_tune, best_params)
-
-rf_fit <- rf_final |>
-  set_engine("ranger") |>
-  fit(rf_recipe, data = train_df)
+rf_final <- finalize_workflow(rf_workflow, best_params)
+rf_fit <- fit(rf_final, data = train_df)
 
 splits <- list(train = train_df, tune = tune_df, test = test_df)
 rf_results <- evaluate_splits(rf_fit, splits, n_predictors = 4, model_name = "rf")
