@@ -1,5 +1,4 @@
-library(dplyr)
-library(readr)
+library(tidyverse)
 
 merged <- read_csv("data/processed/merged.csv")
 train  <- read_csv("data/processed/train.csv")
