@@ -27,3 +27,10 @@ tune_res <- tune_grid(
   resamples = folds,
   grid = rf_grid
 )
+
+best_params <- select_best(tune_res, metric = "rmse")
+rf_final <- finalize_workflow(best_params)
+
+rf_fit <- rf_final |>
+  set_engine("ranger") |>
+  fit(rf_recipe, data = train_df)
