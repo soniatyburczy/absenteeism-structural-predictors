@@ -1,7 +1,15 @@
 library(tidyverse)
+library(data.table)
 
 attendance_df <- read_csv("data/raw/attendance.csv", show_col_types = FALSE, locale = locale(grouping_mark = ","))
 pr_16 <- read_csv("data/raw/performance.csv", show_col_types = FALSE, locale = locale(grouping_mark = ","))
+
+percent_cols <- c("ontrack_year1_2013", "graduation_rate_2013", "college_career_rate_2013", 
+                  "ontrack_year1_2014", "graduation_rate_2014", "college_career_rate_2014",
+                  "ontrack_year1_boro", "graduation_rate_boro", "college_career_rate_boro",
+                  "pct_stu_enough_variety_2014", "pct_stu_safe_2014")
+
+pr_16[, (percent_cols) := lapply(.SD, function(x) as.numeric(gsub("%", "", x))), .SDcols = percent_cols]
 
 merged_df <- attendance_df |>
   rename(
