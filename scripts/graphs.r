@@ -1,3 +1,5 @@
+library(tidyverse)
+
 ## Poly ##
 poly_results <- read_csv("data/model_data/poly_results.csv")
 
@@ -8,7 +10,7 @@ poly_results |>
   geom_line() + geom_point() +
   scale_x_continuous(breaks = 1:10) +
   labs(x = "Polynomial Degree", y = "RMSE",
-       title = "Train vs Development vs Test RMSE by Polynomial Degree") +
+       title = "Train vs Test RMSE by Polynomial Degree") +
   theme_minimal()
 ggsave("plots/poly_plots/RMSE.png")
 
@@ -19,7 +21,7 @@ poly_results |>
   geom_line() + geom_point() +
   scale_x_continuous(breaks = 1:10) +
   labs(x = "Polynomial Degree", y = "MSE",
-       title = "Train vs Development vs Test MSE by Polynomial Degree") +
+       title = "Train vs Test MSE by Polynomial Degree") +
   theme_minimal()
 ggsave("plots/poly_plots/MSE.png")
 
@@ -30,8 +32,9 @@ poly_results |>
   ggplot(aes(x = degree, y = value, color = split, linetype = metric)) +
   geom_line() + geom_point() +
   scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(0, 1)) +
   labs(x = "Polynomial Degree", y = "R²",
-       title = "Train vs Development vs Test R² by Polynomial Degree",
+       title = "Train vs Test R² by Polynomial Degree",
        linetype = "Metric") +
   scale_linetype_manual(values = c("r2" = "solid", "adj_r2" = "dashed"),
                         labels = c("r2" = "R²", "adj_r2" = "Adj R²")) +

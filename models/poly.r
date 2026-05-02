@@ -18,14 +18,15 @@ for (j in 1:10){
 poly_results <- dplyr::bind_rows(results)
 write_csv(poly_results, "data/model_data/poly_results.csv")
 
+# Best degree (based on tune)
 best_degree <- poly_results |>
   filter(split == "tune") |>
   slice_min(rmse, n = 1) |>
-  pull(model_name) |>
+  pull(model) |>
   str_remove("poly_") |>
   as.integer()
 
 best_test_result <- poly_results |>
-  filter(split == "test", model_name == paste0("poly_", best_degree))
+  filter(split == "test", model == paste0("poly_", best_degree))
 
 write_csv(best_test_result, "data/model_data/poly_best_degree.csv")
