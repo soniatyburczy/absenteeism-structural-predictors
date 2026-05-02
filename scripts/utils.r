@@ -21,7 +21,8 @@ adj_r2 <- function(actual, predicted, p) {
 evaluate_splits <- function(model, splits, n_predictors, model_name) {
   purrr::map_dfr(names(splits), function(name) {
     df     <- splits[[name]]
-    preds  <- predict(model, df)
+    preds_raw <- predict(model, df)
+    preds  <- if (is.data.frame(preds_raw)) preds_raw$.pred else preds_raw
     actual <- df$`% Chronically Absent`
     data.frame(
       model  = model_name,
