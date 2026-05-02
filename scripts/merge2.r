@@ -9,7 +9,6 @@ percent_cols <- c("ontrack_year1_2013", "graduation_rate_2013", "college_career_
                   "ontrack_year1_boro", "graduation_rate_boro", "college_career_rate_boro",
                   "pct_stu_enough_variety_2014", "pct_stu_safe_2014")
 
-pr_16[, (percent_cols) := lapply(.SD, function(x) as.numeric(gsub("%", "", x))), .SDcols = percent_cols]
 
 merged_df <- attendance_df |>
   rename(
@@ -21,12 +20,19 @@ merged_df <- attendance_df |>
     chronic_absent = `# Chronically Absent`,
     percent_chronic = `% Chronically Absent`
   ) |>
-  mutate(across(starts_with("%"), ~ as.numeric(gsub("%", "", .)))) |>
+  
+  
+  mutate(
+    across(c(total_days, days_absent, days_present, percent_attend, `20plus_days`, chronic_absent, percent_chronic),
+           ~ as.numeric(gsub("%", "", .))),
+    DBN = as.character(DBN)) |>
   group_by(DBN) |>
-  summarise(across(c(total_days, days_absent, days_present, percent_attend, `20plus_days`, chronic_absent, percent_chronic), mean, na.rm = TRUE)) |>
-  inner_join(pr_16, by = c("DBN" = "dbn"))
+  summarise(across(c(total_days, days_absent, days_present, percent_attend, `20plus_days`, chronic_absent, percent_chronic), ~ mean(., na.rm = TRUE))) |>
+  inner_join(pr_16 |> mutate(across(all_of(percent_cols), ~ as.numeric(gsub("%", "", .))),
+                             dbn = as.character(dbn)),
+             by = c("DBN" = "dbn")) |> 
+  drop_na()
 
-merged_df <- na.omit(merged_df)
 write_csv(merged_df, "data/processed/merged2.csv")
 
 print(nrow(attendance_df))
