@@ -1,4 +1,3 @@
-setwd("C:/Users/khush/Downloads/ML Project")
 library(dplyr)
 library(readr)
 library(data.table)
