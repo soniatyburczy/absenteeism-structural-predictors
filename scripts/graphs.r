@@ -9,6 +9,7 @@ poly_results |>
   ggplot(aes(x = degree, y = rmse, color = split)) +
   geom_line() + geom_point() +
   scale_x_continuous(breaks = 1:10) +
+  scale_y_continuous(limits = c(10, NA)) +
   labs(x = "Polynomial Degree", y = "RMSE",
        title = "Train vs Test RMSE by Polynomial Degree") +
   theme_minimal()
@@ -32,7 +33,7 @@ poly_results |>
   ggplot(aes(x = degree, y = value, color = split, linetype = metric)) +
   geom_line() + geom_point() +
   scale_x_continuous(breaks = 1:10) +
-  scale_y_continuous(limits = c(0, 1)) +
+  scale_y_continuous(limits = c(0.3, 0.8)) +
   labs(x = "Polynomial Degree", y = "R²",
        title = "Train vs Test R² by Polynomial Degree",
        linetype = "Metric") +
