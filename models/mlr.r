@@ -16,4 +16,4 @@ test_preds <- predict(lin_ord1, test_df)
 splits <- list(train = train_df, tune = tune_df, test = test_df)
 linear_results <- evaluate_splits(lin_ord1, splits, 4, "linear")
 
-write_csv(linear_results, "data/model_data/mlr_results.csv")
+write_csv(linear_results, "data/model_data/mlr/mlr_results.csv")
