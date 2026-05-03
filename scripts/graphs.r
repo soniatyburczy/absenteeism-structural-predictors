@@ -1,4 +1,5 @@
 library(tidyverse)
+# Contains all scripts to create plots / graphs: run needed segment, not entire script
 
 ## Poly ##
 poly_results <- read_csv("data/model_data/poly_results.csv")
@@ -41,3 +42,23 @@ poly_results |>
                         labels = c("r2" = "R²", "adj_r2" = "Adj R²")) +
   theme_minimal()
 ggsave("plots/poly_plots/r2_combined.png")
+
+## Density Plot ##
+train_df <- read_csv("data/processed/train.csv")
+tune_df <- read_csv("data/processed/tune.csv")
+test_df <- read_csv("data/processed/test.csv")
+
+predictors <- c("Economic Need Index", "% Poverty", 
+                "% English Language Learners", "% Students with Disabilities")
+
+bind_rows(
+  train_df |> mutate(split = "train"),
+  tune_df  |> mutate(split = "tune"),
+  test_df  |> mutate(split = "test")
+) |>
+pivot_longer(cols = all_of(predictors), names_to = "variable", values_to = "value") |>
+  ggplot(aes(x = value, fill = split, color = split)) +
+  geom_density(alpha = 0.3) +
+  facet_wrap(~variable, scales = "free") +
+  theme_minimal()
+ggsave("plots/diagnostics/density_plot.png")
