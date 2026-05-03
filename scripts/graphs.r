@@ -43,7 +43,7 @@ poly_results |>
   theme_minimal()
 ggsave("plots/poly_plots/r2_combined.png")
 
-## Density Plot ##
+## Diagnostic Plots ##
 train_df <- read_csv("data/processed/train.csv")
 tune_df <- read_csv("data/processed/tune.csv")
 test_df <- read_csv("data/processed/test.csv")
@@ -51,6 +51,7 @@ test_df <- read_csv("data/processed/test.csv")
 predictors <- c("Economic Need Index", "% Poverty", 
                 "% English Language Learners", "% Students with Disabilities")
 
+# Density Plot
 bind_rows(
   train_df |> mutate(split = "train"),
   tune_df  |> mutate(split = "tune"),

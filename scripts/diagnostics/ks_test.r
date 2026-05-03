@@ -28,5 +28,5 @@ ks_to_df <- function(ks_results) {
 }
 
 write_csv(ks_to_df(train_test), "data/diagnostics/ks_train_test.csv")
-write_csv(ks_to_df(tune_test), "data/diagnostics/ks_train_tune.csv")
+write_csv(ks_to_df(train_tune), "data/diagnostics/ks_train_tune.csv")
 write_csv(ks_to_df(tune_test), "data/diagnostics/ks_tune_test.csv")
