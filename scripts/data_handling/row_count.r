@@ -21,4 +21,4 @@ row_count_table <- data.frame(
   stringsAsFactors = FALSE
 )
 
-write.csv(row_count_table, "data/processed/row_counts_summary.csv", row.names = FALSE)
+write.csv(row_count_table, "data/diagnostics/row_counts_summary.csv", row.names = FALSE)

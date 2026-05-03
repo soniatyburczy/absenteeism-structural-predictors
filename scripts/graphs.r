@@ -1,5 +1,5 @@
 library(tidyverse)
-# Contains all scripts to create plots / graphs: run needed segment, not entire script
+# Note: run by needed segment, not entire script
 
 ## Poly ##
 poly_results <- read_csv("data/model_data/poly_results.csv")
