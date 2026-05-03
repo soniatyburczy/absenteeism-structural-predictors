@@ -1,2 +1,2 @@
 trees,tree_depth,learn_rate,.config
-1000,6,0.004641588833612777,pre0_mod58_post0
+100,4,0.1,pre0_mod08_post0

@@ -7,6 +7,7 @@ source("scripts/utils.R")
 train_df <- read_csv("data/processed/train.csv")
 tune_df <- read_csv("data/processed/tune.csv")
 test_df <- read_csv("data/processed/test.csv")
+test2_df <- read_csv("data/processed/2018-2019.csv")
 
 predictors <- c("Economic Need Index", "% Poverty", 
                 "% English Language Learners", "% Students with Disabilities")
@@ -52,7 +53,7 @@ collect_metrics(tune_res) |>
 xgb_final <- finalize_workflow(xgb_workflow, best_params)
 xgb_fit <- fit(xgb_final, data = train_df)
 
-splits <- list(train = train_df, tune = tune_df, test = test_df)
+splits <- list(train = train_df, tune = tune_df, test = test_df, test2 = test2_df)
 xgb_results <- evaluate_splits(xgb_fit, splits, n_predictors = 4, model_name = "xgb")
 write_csv(xgb_results, "data/model_data/xgb/xgb_results.csv")
 
