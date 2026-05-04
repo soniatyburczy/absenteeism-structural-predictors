@@ -7,7 +7,7 @@ source("scripts/utils.R")
 train_df <- read_csv("data/processed/train.csv")
 tune_df <- read_csv("data/processed/tune.csv")
 test_df <- read_csv("data/processed/test.csv")
-test2_df <- read_csv("data/processed/2018-2019.csv")
+test2_df <- read_csv("data/processed/2018_2019.csv")
 
 predictors <- c("Economic Need Index", "% Poverty", 
                 "% English Language Learners", "% Students with Disabilities")

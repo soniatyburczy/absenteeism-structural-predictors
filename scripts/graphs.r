@@ -47,16 +47,18 @@ ggsave("plots/poly_plots/r2_combined.png")
 train_df <- read_csv("data/processed/train.csv")
 tune_df <- read_csv("data/processed/tune.csv")
 test_df <- read_csv("data/processed/test.csv")
+test2_df <- read_csv("data/processed/2018_2019.csv")
 
 predictors <- c("Economic Need Index", "% Poverty", 
                 "% English Language Learners", "% Students with Disabilities")
 
 # Density Plot
 bind_rows(
-  train_df |> mutate(split = "train"),
-  tune_df  |> mutate(split = "tune"),
-  test_df  |> mutate(split = "test")
-) |>
+  train_df |> mutate(split = "2013-2016", Grade = as.character(Grade)),
+  tune_df  |> mutate(split = "2016-2017", Grade = as.character(Grade)),
+  test_df  |> mutate(split = "2017-2018", Grade = as.character(Grade)),
+  test2_df |> mutate(split = "2018-2019", Grade = as.character(Grade))
+)|>
 pivot_longer(cols = all_of(predictors), names_to = "variable", values_to = "value") |>
   ggplot(aes(x = value, fill = split, color = split)) +
   geom_density(alpha = 0.3) +
