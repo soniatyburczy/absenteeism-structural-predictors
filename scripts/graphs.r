@@ -2,7 +2,7 @@ library(tidyverse)
 # Note: run by needed segment, not entire script
 
 ## Poly ##
-poly_results <- read_csv("data/model_data/poly_results.csv")
+poly_results <- read_csv("data/model_data/poly/poly_results.csv")
 
 # RMSE
 poly_results |>
